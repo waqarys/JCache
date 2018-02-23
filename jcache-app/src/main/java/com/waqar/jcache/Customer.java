@@ -5,9 +5,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * Created by @shaikhwaqar
  */
+@Entity
 public class Customer implements Serializable {
 
     private Integer id;
@@ -16,6 +20,7 @@ public class Customer implements Serializable {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date dob;
 
+    @Id
     public Integer getId() {
         return id;
     }
