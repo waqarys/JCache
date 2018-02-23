@@ -1,4 +1,4 @@
-package com.pluralsight.jcache;
+package com.waqar.jcache;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +12,7 @@ import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
 
 /**
- * Created by grant@grantlittle.me
+ * Created by @shaikhwaqar
  */
 @SuppressWarnings({"unused", "UnnecessaryLocalVariable"} )
 @SpringBootApplication

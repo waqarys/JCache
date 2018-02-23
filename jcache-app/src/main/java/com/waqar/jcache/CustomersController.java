@@ -1,4 +1,4 @@
-package com.pluralsight.jcache;
+package com.waqar.jcache;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Created by grant@grantlittle.me
+ * Created by @shaikhwaqar
  */
 @RestController
 @RequestMapping(value = "/customers", produces = "application/json")

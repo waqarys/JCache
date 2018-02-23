@@ -1,4 +1,4 @@
-package com.pluralsight.jcache;
+package com.waqar.jcache;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by grant@grantlittle.me
+ * Created by @shaikhwaqar
  */
 public class Customer implements Serializable {
 
