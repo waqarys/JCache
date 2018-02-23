@@ -8,7 +8,7 @@ import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
 
 /**
- * Created by Grant Little @shaikhwaqar
+ * Created by Waqar Shaikh @shaikhwaqar
  */
 public class Main {
 
