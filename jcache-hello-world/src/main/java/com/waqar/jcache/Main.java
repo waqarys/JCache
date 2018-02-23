@@ -1,4 +1,4 @@
-package com.pluralsight.jcache;
+package com.waqar.jcache;
 
 
 import javax.cache.Cache;
@@ -8,7 +8,7 @@ import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
 
 /**
- * Created by Grant Little grant@grantlittle.me
+ * Created by Grant Little @shaikhwaqar
  */
 public class Main {
 
