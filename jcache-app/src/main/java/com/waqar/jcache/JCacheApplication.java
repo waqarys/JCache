@@ -10,6 +10,9 @@ import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
+import javax.cache.expiry.TouchedExpiryPolicy;
+import java.util.concurrent.TimeUnit;
+import javax.cache.expiry.Duration;
 
 /**
  * Created by @shaikhwaqar
@@ -38,7 +41,12 @@ public class JCacheApplication {
     public MutableConfiguration<Integer, Customer> createCustomersCacheConfig() {
         MutableConfiguration<Integer, Customer> config
                 = new MutableConfiguration<Integer, Customer>()
-                .setTypes(Integer.class, Customer.class);
+                .setTypes(Integer.class, Customer.class)
+                .setCacheWriterFactory(new CustomerCacheWriterFactory())
+                .setWriteThrough(true)
+                .setCacheLoaderFactory(new CustomerCacheLoaderFactory())
+                .setReadThrough(true)
+                .setExpiryPolicyFactory(TouchedExpiryPolicy.factoryOf(new Duration(TimeUnit.SECONDS, 20)));
         return config;
     }
 
