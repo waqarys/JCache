@@ -1,18 +1,24 @@
 package com.waqar.jcache;
 
+import java.util.concurrent.TimeUnit;
+
+import javax.cache.Cache;
+import javax.cache.CacheManager;
+import javax.cache.Caching;
+import javax.cache.configuration.FactoryBuilder;
+import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
+import javax.cache.configuration.MutableConfiguration;
+import javax.cache.expiry.Duration;
+import javax.cache.expiry.TouchedExpiryPolicy;
+import javax.cache.spi.CachingProvider;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import javax.cache.Cache;
-import javax.cache.CacheManager;
-import javax.cache.Caching;
-import javax.cache.configuration.MutableConfiguration;
-import javax.cache.spi.CachingProvider;
-import javax.cache.expiry.TouchedExpiryPolicy;
-import java.util.concurrent.TimeUnit;
-import javax.cache.expiry.Duration;
+import com.waqar.jcache.events.CustomerCacheEntryEventFilter;
+import com.waqar.jcache.events.CustomerCacheEntryListener;
 
 /**
  * Created by @shaikhwaqar
@@ -38,7 +44,9 @@ public class JCacheApplication {
     }
 
     @Bean(name = "customersCacheConfig")
-    public MutableConfiguration<Integer, Customer> createCustomersCacheConfig() {
+    public MutableConfiguration<Integer, Customer> createCustomersCacheConfig(
+            MutableCacheEntryListenerConfiguration<Integer, Customer> listenerConfiguration
+    ) {
         MutableConfiguration<Integer, Customer> config
                 = new MutableConfiguration<Integer, Customer>()
                 .setTypes(Integer.class, Customer.class)
@@ -46,7 +54,9 @@ public class JCacheApplication {
                 .setWriteThrough(true)
                 .setCacheLoaderFactory(new CustomerCacheLoaderFactory())
                 .setReadThrough(true)
-                .setExpiryPolicyFactory(TouchedExpiryPolicy.factoryOf(new Duration(TimeUnit.SECONDS, 20)));
+                .setExpiryPolicyFactory(TouchedExpiryPolicy.factoryOf(new Duration(TimeUnit.SECONDS, 20)))
+                .addCacheEntryListenerConfiguration(listenerConfiguration)
+                ;
         return config;
     }
 
@@ -55,5 +65,15 @@ public class JCacheApplication {
                                              @Qualifier("customersCacheConfig")
                                              MutableConfiguration<Integer, Customer> config) {
         return cacheManager.createCache("customers", config);
+    }
+    
+    @Bean
+    public MutableCacheEntryListenerConfiguration<Integer, Customer> cacheEntryListener() {
+        return new MutableCacheEntryListenerConfiguration<>(
+                FactoryBuilder.factoryOf(CustomerCacheEntryListener.class),
+                FactoryBuilder.factoryOf(CustomerCacheEntryEventFilter.class), // filter
+                true, // pass old value for audit
+                true  // Synchronous/Asynchronous
+        );
     }
 }
