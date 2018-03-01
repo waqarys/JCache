@@ -15,8 +15,11 @@ import javax.cache.spi.CachingProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.jcache.JCacheCacheManager;
 import org.springframework.context.annotation.Bean;
 
+import com.waqar.jcache.annotation.Address;
 import com.waqar.jcache.events.CustomerCacheEntryEventFilter;
 import com.waqar.jcache.events.CustomerCacheEntryListener;
 
@@ -25,6 +28,7 @@ import com.waqar.jcache.events.CustomerCacheEntryListener;
  */
 @SuppressWarnings({"unused", "UnnecessaryLocalVariable"} )
 @SpringBootApplication
+@EnableCaching
 public class JCacheApplication {
 
     public static void main(String... args) {
@@ -49,7 +53,7 @@ public class JCacheApplication {
     ) {
         MutableConfiguration<Integer, Customer> config
                 = new MutableConfiguration<Integer, Customer>()
-                .setTypes(Integer.class, Customer.class)
+                //.setTypes(Integer.class, Customer.class)
                 .setCacheWriterFactory(new CustomerCacheWriterFactory())
                 .setWriteThrough(true)
                 .setCacheLoaderFactory(new CustomerCacheLoaderFactory())
@@ -75,5 +79,27 @@ public class JCacheApplication {
                 true, // pass old value for audit
                 true  // Synchronous/Asynchronous
         );
+    }
+    
+    @Bean
+    public JCacheCacheManager cacheCacheManager(CacheManager cacheManager) {
+        return new JCacheCacheManager(cacheManager);
+    }
+    
+    @Bean(name = "addressesCacheConfig")
+    public MutableConfiguration<Integer, Address> createAddressesCacheConfig() {
+        MutableConfiguration<Integer, Address> config
+                = new MutableConfiguration<Integer, Address>()
+                .setStatisticsEnabled(true)
+                .setManagementEnabled(true)
+                ;
+        return config;
+    }
+    
+    @Bean(name = "addressesCache", destroyMethod = "close")
+    public Cache<Integer, Address> createAddressesCache(CacheManager cacheManager,
+                                                         @Qualifier("addressesCacheConfig")
+                                                         MutableConfiguration<Integer, Address> config) {
+        return cacheManager.createCache("addresses", config);
     }
 }
